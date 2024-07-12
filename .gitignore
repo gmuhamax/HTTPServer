@@ -1,4 +1,5 @@
 /build
 /.vscode
-http.elf
-libhttp.a
+*.elf
+*.a
+*.lwp

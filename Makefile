@@ -14,7 +14,7 @@ libs: $(OBJ_FILES)
 	ar crs lib$(PROJECT_NAME).a $(OBJ_FILES)
 
 $(BUILD_P)%.o: $(SRC_P)%.cpp
-	g++ -c $? -o $@
+	g++ -c $? -o $@ -I./
 
 clear:
 	rm -f lib$(PROJECT_NAME).a

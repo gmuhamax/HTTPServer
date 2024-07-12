@@ -1,8 +1,8 @@
-#include "../http.hpp"
+#include "http.hpp"
 
 namespace http {
     size_t Response::length() {
-        return sizeof(this->body);
+        return this->body.size();
     }
 
     size_t Response::size() {
@@ -13,10 +13,7 @@ namespace http {
         return this->result.c_str();
     }
 
-    Response::Response(string body, Status status) {
-        this->status = status;
-        this->body = body;
-
+    Response::Response(string body, Status status): body(body), status(status) {
         this->result = "HTTP/1.1 ";
         this->result += fromStatus(this->status);
         this->result += "\r\n";

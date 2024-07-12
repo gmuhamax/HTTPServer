@@ -1,4 +1,4 @@
-#include "../http.hpp"
+#include "http.hpp"
 
 #include <stdio.h>
 #include <unistd.h>
@@ -42,11 +42,11 @@ namespace http {
             recv(this->n_socket, buf, 2048, 0);
 
             req = Request(buf);
-            res = this->w_addr[req.getAddr()][req.getMethod()](req);
+            res = route.getResponse(req);
             printf("%s %s %s\n", fromMethod(req.getMethod()).c_str(), req.getAddr().c_str(), req.headers.get("sec-ch-ua-platform").c_str());
             
             send(this->n_socket, res.c_str(), res.size(), 0);
-            this->stop();
+            close(this->n_socket);
         }
 
         printf("[I]: Server closed...\n");
@@ -56,9 +56,5 @@ namespace http {
         this->is_run = false;
         close(this->s_socket);
         close(this->n_socket);
-    }
-
-    void Server::registerHandler(string addr, Method method, http_fun func) {
-        this->w_addr[addr][method] = func;
     }
 }

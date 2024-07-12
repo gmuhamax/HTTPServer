@@ -1,10 +1,12 @@
-#include "../http.hpp"
-
-#include <iostream>
+#include "http.hpp"
 
 namespace http {
     void Headers::add(string key, string value) {
         this->headers[key] = value;
+    }
+
+    string Headers::get(string key) {
+        return this->get(key, "");
     }
 
     string Headers::get(string key, string default_) {
