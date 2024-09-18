@@ -43,7 +43,7 @@ namespace http {
 
             req = Request(buf);
             res = route.getResponse(req);
-            printf("%s %s %s\n", fromMethod(req.getMethod()).c_str(), req.getAddr().c_str(), req.headers.get("sec-ch-ua-platform").c_str());
+            printf("%s %s %s\n", fromMethod(req.getMethod()).c_str(), req.getFullAddr().c_str(), req.headers.get("sec-ch-ua-platform").c_str());
             
             send(this->n_socket, res.c_str(), res.size(), 0);
             close(this->n_socket);

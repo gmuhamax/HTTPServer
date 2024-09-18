@@ -6,7 +6,9 @@ BUILD_P = ./build/
 SRC_FILES = $(wildcard $(SRC_P)*.cpp)
 OBJ_FILES = $(patsubst $(SRC_P)%.cpp, $(BUILD_P)%.o, $(SRC_FILES))
 
-run: clear libs
+all: clear libs run
+
+run:
 	g++ main.cpp -o $(PROJECT_NAME).elf -L./ -lhttp
 	./$(PROJECT_NAME).elf
 

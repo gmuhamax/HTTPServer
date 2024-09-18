@@ -27,4 +27,30 @@ namespace http {
     string fromStatus(Status status) {
         return stat[status];
     }
+
+    string byTokent(const char token, const char* buf, size_t &pos, size_t offset) {
+        string data;
+
+        pos += offset;
+        while (buf[pos] != token)
+        {
+            data += buf[pos];
+            pos++;
+        }
+
+        return data;
+    }
+
+    string byTokent(bool (*alpha)(char symbol), const char* buf, size_t &pos, size_t offset) {
+        string data;
+
+        pos += offset;
+        while (alpha(buf[pos]))
+        {
+            data += buf[pos];
+            pos++;
+        }
+
+        return data;
+    }
 }

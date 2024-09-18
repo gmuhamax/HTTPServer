@@ -13,22 +13,22 @@ namespace http {
         return this->headers.count(key) == 0 ? default_ : this->headers[key];
     }
 
-    Headers::Headers(const char* buf, size_t* offset) {
+    Headers::Headers(const char* buf, size_t &pos) {
         string key, value;
-        while (buf[(*offset)] != '\r' && buf[((*offset)) + 1] != '\n' && buf[(*offset) + 2] != '\r' && buf[(*offset) + 3] != '\n') {
-            while(buf[(*offset)] != ':') {
-                key += buf[(*offset)];
-                (*offset)++;
+        while (buf[pos] != '\r' && buf[pos + 1] != '\n' && buf[pos + 2] != '\r' && buf[pos + 3] != '\n') {
+            while(buf[pos] != ':') {
+                key += buf[pos];
+                pos++;
             }
-            (*offset) += 2;
-            while (buf[(*offset)] != '\r' && buf[(*offset) + 1] != '\n') {
-                value += buf[(*offset)];
-                (*offset)++;
+            pos += 2;
+            while (buf[pos] != '\r' && buf[pos + 1] != '\n') {
+                value += buf[pos];
+                pos++;
             }
             this->add(key, value);
             key.clear();
             value.clear();
-            (*offset) += 2;
+            pos += 2;
         }
     }
 

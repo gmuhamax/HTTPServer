@@ -25,6 +25,8 @@ namespace http {
     Method toMethod(string method);
     string fromMethod(Method method);
     string fromStatus(Status status);
+    string byTokent(const char token, const char* buf, size_t &pos, size_t offset);
+    string byTokent(bool (*alpha)(char symbol), const char* buf, size_t &pos, size_t offset);
 
     class Headers {
     private:
@@ -32,7 +34,7 @@ namespace http {
 
     public:
         Headers() {};
-        Headers(const char* buf, size_t* offset);
+        Headers(const char* buf, size_t &pos);
     
     public:
         string get(string key);
@@ -45,7 +47,10 @@ namespace http {
     private:
         Method method;
         string addr;
+        string addr_q;
         string body;
+        const char* buf;
+        unordered_map<string, string> query_params;
 
     public:
         Headers headers;
@@ -54,8 +59,13 @@ namespace http {
         Request() {};
         Request(const char* buf);
 
+    private:
+        void parseQuery();
+
     public:
+        string getQuery(string name) { return query_params.count(name) == 0 ? "" : query_params[name]; }
         string getAddr() { return this->addr; }
+        string getFullAddr() { return this->addr + this->addr_q; }
         Method getMethod() { return this->method; }
     };
 
@@ -81,19 +91,38 @@ namespace http {
         const char* c_str();
     };
 
-    using route_fun = Response (*)(Request req);
-    using route_map = unordered_map<string, std::unordered_map<Method, route_fun>>;
+    using route_fun = Response (*)(Request req, unordered_map<string, string> args);
 
-    struct Routes {
+    class Route {
     private:
-        route_map w_addr;
+        string temp;
+        Method method;
+        route_fun fun;
+    
+    private:
+        unordered_map<string, string> parse(string addr);
 
+    public:
+        Route(string addr, Method method, route_fun fun): temp(addr), method(method), fun(fun) {};
+        bool thisRoute(Request req);
+        Response getRes(Request req);
+    };
+
+    class Routes {
     private:
-        bool hasAddresAndMethod(string addr, Method method);
+        vector<Route> w_addr;
 
     public:
         Response getResponse(Request req);
-        void addRoute(string addr, Method method, route_fun func);
+        void addRoute(Route route);
+    };
+
+    class StaticFile {
+    public:
+        StaticFile(string addr, string filePath);
+
+    private:
+        string addr, filePath;
     };
 
     class Server {
